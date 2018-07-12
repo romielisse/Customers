@@ -11,7 +11,7 @@ public class Company {
 
     private String companyname;
 
-    @OneToMany(mappedBy = "company", orphanRemoval = true, cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "company", orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     public Set<Customer> customers;
 
     public long getCompanyid() {

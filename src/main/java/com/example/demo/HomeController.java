@@ -3,12 +3,13 @@ package com.example.demo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.List;
+import java.util.*;
 
 @Controller
 public class HomeController {
@@ -28,6 +29,13 @@ public class HomeController {
     {
         model.addAttribute("customers", customerRepository.findAll(resultLimit));
         return "index";
+    }
+
+    @RequestMapping("/company")
+    private String getCompanies(Model model)
+    {
+        model.addAttribute("companies", companyRepository.findAll());
+        return "companylist";
     }
 
     @GetMapping("/search")
@@ -55,9 +63,45 @@ public class HomeController {
 
     @RequestMapping("/topten")
     public String getEmployers(Model model){
-        // List<Company> companies = companyRepository.findAll();
-        model.addAttribute("list", topTenEmployersRepository.findAll());
-        return "topcompanies";
+        HashMap<String,Long> TopTen = new HashMap<>();
+
+        Iterable<Company> companies = companyRepository.findAll();
+        Iterator<Company> iter = companies.iterator();
+
+        // Put company names and count into new HashMap
+        while(iter.hasNext()){
+            Company company = iter.next();
+            TopTen.put(company.getCompanyname(),companyRepository.countCompaniesByCompanyid(company.getCompanyid()));
+        }
+
+        // Sort map
+        //This comparator sorts by HashMap values.
+        Comparator <Map.Entry<String, Long>> sortCompare =
+                (Map.Entry<String, Long> firstValue, Map.Entry<String, Long> secondValue)
+                        -> secondValue.getValue().compareTo(firstValue.getValue());
+
+        //This is the list that will hold each entry from the map.
+        List<Map.Entry<String, Long>> orderedList = new ArrayList<>();
+
+        //Pulls the data from the existing map.
+        orderedList.addAll(TopTen.entrySet());
+
+        // Sort with the comparator we made.
+        Collections.sort(orderedList, sortCompare);
+
+        // Limit results to top 10
+        ArrayList<Map.Entry<String,Long>> orderedListTopTen = new ArrayList<>();
+        int count = 0;
+
+        for (Map.Entry entry : orderedList) {
+            if (count < 10) {
+                orderedListTopTen.add(entry);
+                count++;
+            }
+        }
+
+        model.addAttribute("list", orderedListTopTen);
+        return "topten";
     }
 
     @GetMapping("/addupdate")
@@ -80,10 +124,10 @@ public class HomeController {
         return "company";
     }
 
-    @PostMapping("/addCompany")
-    public String processForm(Company company) {
+    @PostMapping("/processCompany")
+    public String processCompanyForm(Company company) {
         companyRepository.save(company);
-        return "redirect:/";
+        return "redirect:/company";
     }
 
     @RequestMapping("/detail/{id}")
@@ -103,5 +147,17 @@ public class HomeController {
     public String deleteCustomer(@PathVariable("id") long id) {
         customerRepository.deleteById(id);
         return "redirect:/";
+    }
+
+    @RequestMapping("/updateCompany/{id}")
+    public String updateCompany(@PathVariable("id") long id, Model model) {
+        model.addAttribute("company", companyRepository.findById(id));
+        return "company";
+    }
+
+    @RequestMapping("/deleteCompany/{id}")
+    public String deleteCompany(@PathVariable("id") long id) {
+        companyRepository.deleteById(id);
+        return "redirect:/company";
     }
 }

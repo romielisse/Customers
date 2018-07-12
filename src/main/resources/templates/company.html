@@ -10,13 +10,13 @@
     <h3>Add Company</h3>
 
     <form action="#"
-          th:action="@{/addCompany}"
+          th:action="@{/processCompany}"
           th:object="${company}"
           method="post">
         <input type="hidden" th:field="*{companyid}"/>
         <div class="form-group">
             <label for="company">Company</label>
-            <input type="company" class="form-control" id="company" th:field="*{companyname}">
+            <input type="text" class="form-control" id="company" th:field="*{companyname}">
         </div>
         <button type="submit" class="btn btn-primary">Submit</button>
     </form>

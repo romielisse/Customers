@@ -3,6 +3,8 @@ use customers;
 select * from customer order by customerid desc;
 select * from company order by companyid desc;
 
+select * from company where CompanyName like 'me%'
+
 -- SET foreign_key_checks = 1;
 -- delete from company where companyname is null;
 
@@ -26,10 +28,27 @@ select company.companyname, count(customer.customerid) as total_employees
 from company
 inner join customer on company.companyid = customer.companyID
 group by company.companyname
-order by total_employees desc;
+order by total_employees desc
+limit 10;
 
 -- List of states and the number of people in each
 select customer.state, count(customer.customerid) as population
 from customer
 group by state
 order by population desc;
+
+select * from toptenemployers;
+
+CREATE OR REPLACE VIEW TopTenEmployers AS 
+SELECT
+  company.companyid,
+  company.companyname, count(customer.customerid) as total_employees
+from company
+inner join customer on company.companyid = customer.companyID
+group by company.companyname
+order by total_employees desc
+limit 10;
+
+
+
+

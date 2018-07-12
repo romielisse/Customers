@@ -15,11 +15,13 @@
             <th>Number of Employees</th>
         </tr>
         </thead>
-        <tbody>
-        <tr th:each="company : ${list}">
-            <td><span th:text="${company.companyname}"></span></td>
-            <!--<td><span th:text="${company.totalemployees}"></span></td>-->
-        </tr>
+        <tbody th:each="map : ${list}">
+            <tr th:each="mapEntry : ${map}">
+                <td ><span th:text="${mapEntry.key}"></span></td>
+                <td><span th:text="${mapEntry.value}"></span></td>
+                <!--<td><span th:text="${company.companyname}"></span></td>-->
+                <!--<td><span th:text="${company.totalemployees}"></span></td>-->
+            </tr>
         </tbody>
     </table>
 </div>
