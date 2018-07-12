@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="www.thymeleaf.org">
+<head>
+    <title>Customers</title>
+    <th:block th:insert="base :: header"></th:block>
+</head>
+<body>
+    <div th:replace="base :: nav"></div>
+
+    <div class="table-responsive">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Company</th>
+                    <th>Position</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="customer : ${customers}">
+                    <td><span th:text="${customer.customerid}"></span></td>
+                    <td><span th:text="${customer.firstname + ' ' + customer.lastname}"></span></td>
+                    <td><span th:text="${customer.company.companyname}"></span></td>
+                    <td><span th:text="${customer.position}"></span></td>
+                    <td>
+                        <a class="btn btn-primary" th:href ="@{/update/{id}(id=${customer.customerid})}">Update</a>
+                        <a class="btn btn-primary" th:href ="@{/detail/{id}(id=${customer.customerid})}">Details</a>
+                        <a class="btn btn-danger" th:href ="@{/delete/{id}(id=${customer.customerid})}">Delete</a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

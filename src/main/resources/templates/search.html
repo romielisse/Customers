@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="www.thymeleaf.org">
+<head>
+    <title>Search for Customers</title>
+    <th:block th:insert="base :: header"></th:block>
+</head>
+<body>
+<div th:replace="base :: nav"></div>
+
+    <h3>Search by Last Name</h3>
+
+    <form action="#"
+      th:action="@{/lastnameSearch}"
+      method="post">
+        <div class="form-group">
+            <label for="lastname">Last Name</label>
+            <input type="lastname" class="form-control" id="lastname" name="lastname">
+        </div>
+        <button type="submit" class="btn btn-primary">Search</button>
+    </form>
+
+    <p></p>
+
+    <h3>Search by Employer and Position</h3>
+
+    <form action="#"
+          th:action="@{/employmentSearch}"
+          method="post">
+        <div class="form-group">
+            <label for="companyname">Employer</label>
+            <input type="companyname" class="form-control" id="companyname" name="companyname">
+        </div>
+        <div class="form-group">
+            <label for="position">Position</label>
+            <input type="position" class="form-control" id="position" name="position">
+        </div>
+        <button type="submit" class="btn btn-primary">Search</button>
+    </form>
+
+</body>
+</html>
