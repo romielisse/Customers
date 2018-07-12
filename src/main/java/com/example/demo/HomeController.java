@@ -8,6 +8,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 @Controller
 public class HomeController {
@@ -16,6 +17,9 @@ public class HomeController {
 
     @Autowired
     CustomerRepository customerRepository;
+
+    @Autowired
+    TopTenEmployersRepository topTenEmployersRepository;
 
     Pageable resultLimit = new PageRequest(0,100);
 
@@ -51,6 +55,8 @@ public class HomeController {
 
     @RequestMapping("/topten")
     public String getEmployers(Model model){
+        // List<Company> companies = companyRepository.findAll();
+        model.addAttribute("list", topTenEmployersRepository.findAll());
         return "topcompanies";
     }
 
@@ -66,6 +72,18 @@ public class HomeController {
         customerRepository.save(customer);
         model.addAttribute("customer", customer);
         return "detail";
+    }
+
+    @GetMapping("/addCompany")
+    public String getCompanyForm(Model model){
+        model.addAttribute("company", new Company());
+        return "company";
+    }
+
+    @PostMapping("/addCompany")
+    public String processForm(Company company) {
+        companyRepository.save(company);
+        return "redirect:/";
     }
 
     @RequestMapping("/detail/{id}")
