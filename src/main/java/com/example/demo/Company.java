@@ -1,5 +1,8 @@
 package com.example.demo;
 
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
+
 import javax.persistence.*;
 import java.util.Set;
 
@@ -12,6 +15,7 @@ public class Company {
     private String companyname;
 
     @OneToMany(mappedBy = "company", orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @NotFound(action = NotFoundAction.IGNORE)
     public Set<Customer> customers;
 
     public long getCompanyid() {

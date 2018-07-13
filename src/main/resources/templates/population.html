@@ -5,22 +5,25 @@
     <th:block th:insert="base :: header"></th:block>
 </head>
 <body>
-<div th:replace="base :: nav"></div>
+    <div th:replace="base :: nav"></div>
 
-<div class="table-responsive">
-    <table class="table table-hover">
-        <thead>
-        <tr>
-            <th>State</th>
-            <th>Population</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="customer : ${customers}">
-            <td><span th:text="${customer.company.companyname}"></span></td>
-        </tr>
-        </tbody>
-    </table>
-</div>
+    <div class="table-responsive">
+        <table class="table table-hover text-center">
+            <thead>
+                <tr>
+                    <th>State</th>
+                    <th>Population</th>
+                </tr>
+            </thead>
+            <tbody th:each="map : ${list}">
+                <tr th:each="mapEntry : ${map}">
+                    <td ><span th:text="${mapEntry.key}"></span></td>
+                    <td><span th:text="${mapEntry.value}"></span></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!--<p th:each="state : ${states}"><span th:text="${state}"></span></p>-->
 </body>
 </html>

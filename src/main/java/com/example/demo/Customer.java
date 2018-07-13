@@ -1,5 +1,8 @@
 package com.example.demo;
 
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
+
 import javax.persistence.*;
 import java.util.Set;
 
@@ -20,6 +23,7 @@ public class Customer {
     private String position;
 
     @ManyToOne(fetch = FetchType.EAGER)
+    @NotFound(action = NotFoundAction.IGNORE)
     @JoinColumn(name = "companyid")
     private Company company;
 

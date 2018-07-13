@@ -61,49 +61,6 @@ public class HomeController {
         return "index";
     }
 
-    @RequestMapping("/topten")
-    public String getEmployers(Model model){
-        HashMap<String,Long> TopTen = new HashMap<>();
-
-        Iterable<Company> companies = companyRepository.findAll();
-        Iterator<Company> iter = companies.iterator();
-
-        // Put company names and count into new HashMap
-        while(iter.hasNext()){
-            Company company = iter.next();
-            TopTen.put(company.getCompanyname(),companyRepository.countCompaniesByCompanyid(company.getCompanyid()));
-        }
-
-        // Sort map
-        //This comparator sorts by HashMap values.
-        Comparator <Map.Entry<String, Long>> sortCompare =
-                (Map.Entry<String, Long> firstValue, Map.Entry<String, Long> secondValue)
-                        -> secondValue.getValue().compareTo(firstValue.getValue());
-
-        //This is the list that will hold each entry from the map.
-        List<Map.Entry<String, Long>> orderedList = new ArrayList<>();
-
-        //Pulls the data from the existing map.
-        orderedList.addAll(TopTen.entrySet());
-
-        // Sort with the comparator we made.
-        Collections.sort(orderedList, sortCompare);
-
-        // Limit results to top 10
-        ArrayList<Map.Entry<String,Long>> orderedListTopTen = new ArrayList<>();
-        int count = 0;
-
-        for (Map.Entry entry : orderedList) {
-            if (count < 10) {
-                orderedListTopTen.add(entry);
-                count++;
-            }
-        }
-
-        model.addAttribute("list", orderedListTopTen);
-        return "topten";
-    }
-
     @GetMapping("/addupdate")
     public String getCustomerForm(Model model) {
         model.addAttribute("customer", new Customer());
@@ -159,5 +116,73 @@ public class HomeController {
     public String deleteCompany(@PathVariable("id") long id) {
         companyRepository.deleteById(id);
         return "redirect:/company";
+    }
+
+    @RequestMapping("/topten")
+    public String getEmployers(Model model){
+        HashMap<String,Long> TopTen = new HashMap<>();
+
+        Iterable<Company> companies = companyRepository.findAll();
+        Iterator<Company> iter = companies.iterator();
+
+        // Put company names and count into new HashMap
+        while(iter.hasNext()){
+            Company company = iter.next();
+            TopTen.put(company.getCompanyname(),companyRepository.countCompaniesByCompanyid(company.getCompanyid()));
+        }
+
+        // Sort map
+        //This comparator sorts by HashMap values.
+        Comparator <Map.Entry<String, Long>> sortCompare =
+                (Map.Entry<String, Long> firstValue, Map.Entry<String, Long> secondValue)
+                        -> secondValue.getValue().compareTo(firstValue.getValue());
+
+        //This is the list that will hold each entry from the map.
+        List<Map.Entry<String, Long>> orderedList = new ArrayList<>();
+
+        //Pulls the data from the existing map.
+        orderedList.addAll(TopTen.entrySet());
+
+        // Sort with the comparator we made.
+        Collections.sort(orderedList, sortCompare);
+
+        // Limit results to top 10
+        ArrayList<Map.Entry<String,Long>> orderedListTopTen = new ArrayList<>();
+        int count = 0;
+
+        for (Map.Entry entry : orderedList) {
+            if (count < 10) {
+                orderedListTopTen.add(entry);
+                count++;
+            }
+        }
+
+        model.addAttribute("list", orderedListTopTen);
+        return "topten";
+    }
+
+    @RequestMapping("/population")
+    public String getPopulation(Model model) {
+        HashMap<String,Long> Population = new HashMap<>();
+        ArrayList<String> states = new ArrayList<>();
+
+        Iterable<Customer> customers = customerRepository.findAll();
+        Iterator<Customer> iter = customers.iterator();
+
+        // Put distinct states into array list
+        while(iter.hasNext()){
+            Customer customer = iter.next();
+            if(!states.contains(customer.getState())) {
+                states.add(customer.getState());
+            }
+        }
+
+        for(String state : states) {
+            Population.put(state,customerRepository.countByState(state));
+        }
+
+        model.addAttribute("list", Population);
+        //model.addAttribute("num", customerRepository.countCustomersByState(new Customer().getState()));
+        return "population";
     }
 }
